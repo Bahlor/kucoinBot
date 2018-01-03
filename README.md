@@ -41,6 +41,9 @@ To be transparent, here's the forumla being used to calculate the buy amount:
 
 (balance + externalCoinBalance) * volumePercent * (1/(1 - volumePercent) * 1 + buyDifference)
 
+NOTE: I've had the best experience with higher percentages for the sell / buy Values. I currently run 6 on both
+
+
 #### Example file 
 
 ```json
@@ -49,10 +52,10 @@ To be transparent, here's the forumla being used to calculate the buy amount:
   "apiSecret": "238ryfiuahskuqh4ri",
   "trade": "BTC",
   "currency": "UTK",
-  "sellValuePercent": 4,
-  "buyValuePercent": 7,
+  "sellValuePercent": 6,
+  "buyValuePercent": 6,
   "volumePercent": 3,
-  "buyDifference": 0,
+  "buyDifference": 2,
   "extCoinBalance": 0,
   "checkInterval": 30,
   "slackToken": "",
