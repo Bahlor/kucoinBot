@@ -83,5 +83,13 @@ Bots run without your intervention. It is recommended that you have a means to t
 
 I highly recommend using the slack notification feature here.
 
+## Donations
+
+If you'd like to donate as a thank you, you can do so here:
+
+BTC: 19h1hgS2iSBReUaEo8oVkxkQdUDGwSuKCH
+
+ETH: 0x38d413ee72a8705b2e5981c924048f299ed1d15e
+
 ## License
 Code released under the [MIT License](https://github.com/jufkes/bittrexBot/master/LICENSE).
