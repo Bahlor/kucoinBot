@@ -3,6 +3,7 @@ __author__ = 'chase.ufkes'
 
 from kucoin.client import Client
 from slackclient import SlackClient
+from decimal import Decimal
 import time
 import json
 import logging
@@ -27,6 +28,14 @@ initialSellPrice = config.get('initialSellPrice', 0)
 tradeAmount = config.get('tradeAmount', 0)
 channel = config['slackChannel']
 token = config['slackToken']
+
+logging.info("#### startup ####")
+
+logging.info(client)
+logging.info(tokenPair)
+logging.info("---- testing ----")
+logging.info(str(client.get_tick(tokenPair)))
+logging.info("---- testing end ----")
 
 # global constants
 client = Client(apiKey, apiSecret)
@@ -134,27 +143,31 @@ while True:
             balance = client.get_coin_balance(currency)
             balance = (float(balance['balanceStr']) + float(extCoinBalance))
             buyAmount = determine_buy_amount(balance)
-            buyPrice = determine_initial_buy_price(price)
+            buyPrice = round(Decimal(determine_initial_buy_price(price)),6)
             logging.info("setting buy of " + str(buyAmount) + " at " + str(buyPrice))
-            logging.info (client.create_buy_order(tokenPair, buyPrice, buyAmount))
+            logging.info (client.create_buy_order(tokenPair, str(buyPrice), buyAmount))
             sellAmount = determine_sell_amount(balance)
-            sellPrice = determine_initial_sell_price(price)
+            sellPrice = round(Decimal(determine_initial_sell_price(price)),6)
             logging.info("setting sell of " + str(sellAmount) + " at " + str(sellPrice))
-            logging.info (client.create_sell_order(tokenPair, sellPrice, sellAmount))
-        else:
-            logging.info("No orders present...setting to ticker price")
-            balance = client.get_coin_balance(currency)
-            balance = (float(balance['balanceStr']) + float(extCoinBalance))
-            buyAmount = determine_buy_amount(balance)
-            price = (client.get_tick(tokenPair)['lastDealPrice'])
-            buyPrice = determine_initial_buy_price(price)
-            print (buyPrice)
-            logging.info("setting buy of " + str(buyAmount) + " at " + str(buyPrice))
-            logging.info(client.create_buy_order(tokenPair, buyPrice, buyAmount))
-            sellAmount = determine_sell_amount(balance)
-            sellPrice = determine_initial_sell_price(price)
-            logging.info("setting sell of " + str(sellAmount) + " at " + str(sellPrice))
-            logging.info(client.create_sell_order(tokenPair, sellPrice, sellAmount))
+            logging.info (client.create_sell_order(tokenPair, str(sellPrice), sellAmount))
+    else:
+        logging.info("No orders present...setting to ticker price")
+        balance = client.get_coin_balance(currency)
+        balance = (float(balance['balanceStr']) + float(extCoinBalance))
+        buyAmount = determine_buy_amount(balance)
+        logging.info("response: " + str(client.get_tick(tokenPair)))
+        price = (client.get_tick(tokenPair)["lastDealPrice"])
+        logging.info("lastDealPrice: " + str(price))
+        buyPrice = round(Decimal(determine_initial_buy_price(price)),6)
+        print (buyPrice)
+        logging.info("setting buy of " + str(buyAmount) + " at " + str(buyPrice))
+        logging.info("total buy " + str(buyAmount * float(buyPrice)) +" eth")
+        logging.info(client.create_buy_order(tokenPair, str(buyPrice), buyAmount))
+        sellAmount = determine_sell_amount(balance)
+        sellPrice = round(Decimal(determine_initial_sell_price(price)),6)
+        logging.info("setting sell of " + str(sellAmount) + " at " + str(sellPrice))
+        logging.info("total sell " + str(sellAmount * float(sellPrice)) + " eth")
+        logging.info(client.create_sell_order(tokenPair, str(sellPrice), sellAmount))
     except:
         logging.info ("Shit went sideways...")
 
